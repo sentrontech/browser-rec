@@ -1,36 +1,49 @@
 import { EventEmitter } from 'events'
-import { ClickEvent, ConsoleEvent, EventType, RecordConfig } from './types'
+import EventStorage from './event/storage'
+import { ClickEvent, ConsoleEvent, EmittedEvent, EventType, StartOpts } from './types'
 
 class Emitter extends EventEmitter {
-  config: RecordConfig
+  opts: StartOpts
+  eventStorage: EventStorage
 
-  constructor(config: RecordConfig) {
+  constructor(opts: StartOpts, eventStorage: EventStorage) {
     super()
-    this.config = config
+    this.opts = opts
+    this.eventStorage = eventStorage
+  }
+
+  start = () => {
+    this.on(EventType.Click, this.handleClick)
+    this.on(EventType.Console, this.handleConsole)
   }
 
   handleClick = (e: ClickEvent) => {
-    // todo
+    this.eventStorage.append(
+      this._addTs(e)
+    )
   }
 
   handleConsole = (e: ConsoleEvent) => {
     // todo
   }
-}
 
-const setupEvents = (emitter: Emitter) => {
-  emitter.on(EventType.Click, emitter.handleClick)
-  emitter.on(EventType.Console, emitter.handleConsole)
+  _addTs = (e: EmittedEvent) => {
+    e.ts = Date.now()
+    return e
+  }
 }
 
 let emitter: Emitter
-export default function getEmitterInstance (config?: RecordConfig): Emitter {
+export default function getEmitterInstance (
+  opts?: StartOpts,
+  eventStorage?: EventStorage
+): Emitter {
   if (emitter) return emitter
-  if (config) {
-    emitter = new Emitter(config)
-    setupEvents(emitter)
+  if (opts && eventStorage) {
+    emitter = new Emitter(opts, eventStorage)
+    // setupEvents(emitter)
     return emitter
   }
   // TODO custom error
-  throw new Error('specify config when creating instance of emitter')
+  throw new Error('specify options when creating instance of emitter')
 }

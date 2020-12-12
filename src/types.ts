@@ -18,23 +18,33 @@ export type RecordConfig = {
   endpoint?: string
 }
 
+export type EmittedEvent = ConsoleEvent | ClickEvent
+
+type BaseEvent = {
+  eventType: EventType
+  ts?: number
+}
+
 export type ConsoleEvent = {
-  type: EventType.Console
   data: {
     msg: string
   }
-}
+} & BaseEvent
 
 export type ClickEvent = {
-  type: EventType.Click
   el: HTMLElement,
   data: {
     x: number,
     y: number
   }
-}
+} & BaseEvent
 
 export type EventOpts = {
   passive?: boolean
   capture?: boolean
+}
+
+export type StartOpts = {
+  clientCode: string,
+  endpoint: string
 }

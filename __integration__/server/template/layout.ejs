@@ -1,9 +1,15 @@
 <html>
   <head>
-    <%- include('_cdn-script') -%>
-    <%- include('_start') -%>
+    <script src="http://localhost:9999/dist/sentron.min.js"></script>
+    <script>
+      sentron.start({
+        clientCode: 'ABC123XY',
+        endpoint: 'http://localhost:9999/'
+      });
+    </script>
   </head>
+
   <body>
-    <%- partial && include(partial) -%>
+    <%- partial && include(partial) || 'Sentron' -%>
   </body>
 </html>

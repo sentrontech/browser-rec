@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "test:integration": "jest -c jest.integration.config.js",
+    "test:integration": "npm run build; jest -c jest.integration.config.js",
     "server:integration": "tsc __integration__/server/index.ts --esModuleInterop && node __integration__/server/index.js",
     "build": "rollup -c",
     "watch": "rollup -cw"

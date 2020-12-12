@@ -1,0 +1,13 @@
+import { EmittedEvent } from '../types'
+
+export default class EventStorage {
+  private events: EmittedEvent[] = []
+
+  append = (e: EmittedEvent) => {
+    this.events.push(e)
+  }
+
+  getBatch = () => {
+    return this.events
+  }
+}

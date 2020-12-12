@@ -3,7 +3,6 @@ import { EventType, ClickEvent } from '../types'
 import { addEventListener } from '../utils/dom'
 
 const recordClicks = () => {
-  console.log('??')
   return addEventListener('click', emitClickEvent)
 }
 
@@ -18,11 +17,11 @@ const emitClickEvent = (e: MouseEvent) => {
 
 const generateEvent = (el: HTMLElement, e: MouseEvent): ClickEvent => {
   return {
-    type: EventType.Click,
+    eventType: EventType.Click,
     el,
     data: {
       x: e.clientX,
-      y: e.clientY,
+      y: e.clientY
     }
   }
 }
