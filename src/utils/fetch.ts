@@ -1,6 +1,8 @@
+import { EmittedEvent } from "../types"
+
 export async function postJSON(
   url: string,
-  body?: object,
+  body?: EmittedEvent[],
   headers?: Headers
 ) {
   const options: RequestInit = {

@@ -24,6 +24,7 @@ export default class EventPublisher {
   private publish = async () => {
     const events = this.eventStorage.getBatch()
     // TODO contingency when events could not be posted
+    console.log('events', events)
     await postJSON(
       `${this.endpoint}api/events`,
       events

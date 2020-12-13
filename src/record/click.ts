@@ -1,6 +1,6 @@
 import getEmitterInstance from '../emitter'
 import { EventType, ClickEvent } from '../types'
-import { addEventListener } from '../utils/dom'
+import { addEventListener, cssPath } from '../utils/dom'
 
 const recordClicks = () => {
   return addEventListener('click', emitClickEvent)
@@ -18,8 +18,8 @@ const emitClickEvent = (e: MouseEvent) => {
 const generateEvent = (el: HTMLElement, e: MouseEvent): ClickEvent => {
   return {
     eventType: EventType.Click,
-    el,
     data: {
+      cssPath: cssPath(el),
       x: e.clientX,
       y: e.clientY
     }

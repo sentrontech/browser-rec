@@ -6,8 +6,10 @@ const app = express()
 app.use(express.json())
 app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, 'template'))
-app.use('/template/layout', (_req, res) => res.render('layout.ejs', { partial: false }))
-app.use('/template/:id', (req, res) =>  res.render('layout.ejs', { partial: req.params.id }))
+app.use('/template/layout', (_req, res) => 
+  res.render('layout.ejs', { partial: false }))
+app.use('/template/:id', (req, res) => 
+  res.render('layout.ejs', { partial: req.params.id }))
 app.use('/dist', express.static('./dist'))
 
 app.listen(PORT, () => {

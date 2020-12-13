@@ -32,8 +32,8 @@ export type ConsoleEvent = {
 } & BaseEvent
 
 export type ClickEvent = {
-  el: HTMLElement,
   data: {
+    cssPath: string,
     x: number,
     y: number
   }

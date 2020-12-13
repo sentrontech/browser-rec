@@ -19,8 +19,8 @@ describe('recordClicks', () => {
     const eventType = EventType.Click
     const out: ClickEvent = {
       eventType,
-      el: document.body,
       data: {
+        cssPath: 'body',
         x: 0,
         y: 0,
       }

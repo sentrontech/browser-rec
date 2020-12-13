@@ -41,7 +41,6 @@ export default function getEmitterInstance (
   if (emitter) return emitter
   if (opts && eventStorage) {
     emitter = new Emitter(opts, eventStorage)
-    // setupEvents(emitter)
     return emitter
   }
   // TODO custom error
