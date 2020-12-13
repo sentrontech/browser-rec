@@ -11,10 +11,10 @@ jest.mock('../emitter', () => {
 
 
 describe('recordClicks', () => {
+  beforeAll(recordClicks)
   afterEach(() => emitterMock.emit.mockReset())
 
-  test('emits correct eventType and data', () => {
-    recordClicks()
+  it('emits correct eventType and data', () => {
     document.body.click()
     const eventType = EventType.Click
     const out: ClickEvent = {
@@ -28,8 +28,7 @@ describe('recordClicks', () => {
     expect(emitterMock.emit).toHaveBeenCalledWith(eventType, out)
   })
 
-  test('does not emit when click not fired', () => {
-    recordClicks()
+  it('does not emit when click not fired', () => {
     const btn = document.createElement('button')
     btn.disabled = true
     document.body.append(btn)

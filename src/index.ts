@@ -5,12 +5,13 @@ import record from './record'
 import { StartOpts } from './types'
 
 const start = (opts: StartOpts) => {
+  // TODO console
   // TODO blocked input
   // TODO get text of the element
   // TODO Publisher retry questions (???) - endpoint down, latency spike, > retry timer
-  // Why singleton // mocks
+  // TODO cssPath only 3 parents high
   const eventStorage = new EventStorage()
-  const eventPublisher = new EventPublisher(opts.endpoint, eventStorage)
+  const eventPublisher = new EventPublisher(opts, eventStorage)
   const eventEmitter = getEmitterInstance(opts, eventStorage)
   eventEmitter.start()
   record.start()

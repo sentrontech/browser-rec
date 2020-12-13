@@ -1,12 +1,12 @@
 import { cssPath } from './dom'
 
 describe('cssPath', () => {
-  test('returns body if body', () => {
+  it('returns body if body', () => {
     const path = cssPath(document.body)
     expect(path).toEqual('body')
   })
 
-  test('returns id attribute as path', () => {
+  it('returns id attribute as path', () => {
     const outer = document.createElement('div')
     outer.className = 'inner'
     const btn = document.createElement('button')
@@ -18,7 +18,7 @@ describe('cssPath', () => {
     expect(path).not.toContain('inner')
   })
 
-  test('returns path with parent classes', () => {
+  it('returns path with parent classes', () => {
     const outer = document.createElement('div')
     outer.className = 'outer'
     const inner = document.createElement('div')
@@ -32,7 +32,7 @@ describe('cssPath', () => {
     expect(path).toEqual('div.outer > div.inner.another-inner > button.btn')
   })
 
-  test('returns path with 50 character target', () => {
+  it('returns path with 50 character target', () => {
     const outer = document.createElement('div')
     outer.className = 'outer'
     const inner = document.createElement('div')
@@ -49,7 +49,7 @@ describe('cssPath', () => {
   })
 
   describe('using attributes', () => {
-    test('returns path with type attribute when no class', () => {
+    it('returns path with type attribute when no class', () => {
       const outer = document.createElement('div')
       outer.className = 'outer'
       const inner = document.createElement('input')
@@ -60,7 +60,7 @@ describe('cssPath', () => {
       expect(path).toEqual('div.outer > input[type=password]')
     })
 
-    test('returns path with name attribute when no class', () => {
+    it('returns path with name attribute when no class', () => {
       const outer = document.createElement('div')
       outer.className = 'outer'
       const inner = document.createElement('input')
@@ -71,7 +71,7 @@ describe('cssPath', () => {
       expect(path).toEqual('div.outer > input[name=a-name]')
     })
 
-    test('returns path from class instead of attribute', () => {
+    it('returns path from class instead of attribute', () => {
       const outer = document.createElement('div')
       outer.className = 'outer'
       const inner = document.createElement('input')

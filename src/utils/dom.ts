@@ -1,10 +1,10 @@
-import { EventOpts } from '../types'
+import { EventListenerOpts } from '../types'
 
 export function addEventListener<E extends Event>(
   event: string,
   fn: (evt: E) => void,
   target: Document = document,
-  opts: EventOpts = { capture: true, passive: true }
+  opts: EventListenerOpts = { capture: true, passive: true }
 ) {
   return target.addEventListener(event, fn as (evt: Event) => void, opts)
 }
@@ -15,6 +15,7 @@ export function cssPath(el: HTMLElement) {
     This means that edge cases, i.e. duplicate id attributes are okay.
     This also means we try to find common attributes for the css path, like `name`
     We are not using this to pin point a specific element at a later time.
+    // TODO check we only go up n number of parentNodes
   */
   const CSSPATH_TARGET_LENGTH = 50
   const SEEKABLE_ATTRS = ['name', 'type']

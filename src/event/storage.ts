@@ -8,6 +8,8 @@ export default class EventStorage {
   }
 
   getBatch = () => {
-    return this.events
+    const events = this.events
+    this.events = []
+    return events
   }
 }

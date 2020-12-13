@@ -25,9 +25,17 @@ type BaseEvent = {
   ts?: number
 }
 
+export enum ConsoleMethod {
+  Debug = 'debug',
+  Info = 'info',
+  Warn = 'warn',
+  Error = 'error',
+  Log = 'log'
+}
 export type ConsoleEvent = {
   data: {
-    msg: string
+    method: ConsoleMethod,
+    args: any[]
   }
 } & BaseEvent
 
@@ -39,7 +47,11 @@ export type ClickEvent = {
   }
 } & BaseEvent
 
-export type EventOpts = {
+export type EventsDto = {
+  events: EmittedEvent[]
+}
+
+export type EventListenerOpts = {
   passive?: boolean
   capture?: boolean
 }
@@ -47,4 +59,5 @@ export type EventOpts = {
 export type StartOpts = {
   clientCode: string,
   endpoint: string
+  pollMs: number
 }

@@ -1,8 +1,8 @@
-import { EmittedEvent } from "../types"
+import { EventsDto } from '../types'
 
 export async function postJSON(
   url: string,
-  body?: EmittedEvent[],
+  body: EventsDto,
   headers?: Headers
 ) {
   const options: RequestInit = {

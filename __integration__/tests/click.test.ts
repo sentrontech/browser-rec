@@ -1,43 +1,55 @@
+import { ClickEvent, EventsDto } from "../../src/types"
+import './utils'
+
 const hostname = 'http://localhost:9999/'
 
 describe('recording clicks', () => {
-  test('it records', async () => {
+
+  beforeEach(async () => {
+    await jestPlaywright.resetPage()
+  })
+
+  it('records', async () => {
     await page.goto(`${hostname}template/button`)
     await page.click('#inert-btn')
     const request = await page.waitForRequest('**/api/events')
-    const postData = request.postDataJSON()
-    const out = [
+    const postData = request.postDataJSON() as EventsDto
+    const events = [
       {
         data: {
           cssPath: '#inert-btn',
-          x: 50,
-          y: 18
+          x: expect.any(Number),
+          y: expect.any(Number)
         },
         eventType: 'sentron.dom.click',
         ts: expect.any(Number)
       }
     ]
-    expect(postData).toEqual(out)
+    expect(postData).toEqual({ events })
+    // A range is used as various browsers click at slightly different pixel positions
+    // Perhaps another way would be to have a browser specific directory for tests or 
+    // to detect the browser with `browserName` and specify the values directly
+    // or to use normalise.css in the `layout.ejs`
+    expect((postData.events[0] as ClickEvent).data.x).toBeWithinRange(49, 54)
+    expect((postData.events[0] as ClickEvent).data.y).toBeWithinRange(15, 19)
   })
 
-  test('it records multiple clicks', async () => {
+  it('records multiple clicks', async () => {
     await page.goto(`${hostname}template/button`)
     await page.click('#inert-btn')
     await page.click('#inert-btn')
     await page.click('#inert-btn')
     const request = await page.waitForRequest('**/api/events')
-    const postData = JSON.parse(request.postData() as string) as Object[]
-    console.log('pd', postData)
-    console.log('pd length', postData.length)
-    expect(postData.length).toBe(3)  
+    const postData = request.postDataJSON() as EventsDto
+    expect(postData.events.length).toBe(3)
   })
 
-  test('it records x and y', async () => {
+  it('records x and y', async () => {
     await page.goto(`${hostname}template/button`)
     await page.mouse.click(150, 20)
     const request = await page.waitForRequest('**/api/events')
-    const postData = request.postDataJSON()
-    const out = [
+    const postData = request.postDataJSON() as EventsDto
+    const events = [
       {
         data: {
           cssPath: 'body',
@@ -48,6 +60,6 @@ describe('recording clicks', () => {
         ts: expect.any(Number)
       }
     ]
-    expect(postData).toEqual(out)  
+    expect(postData).toEqual({ events })  
   })
 })

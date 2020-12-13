@@ -24,7 +24,10 @@ class Emitter extends EventEmitter {
   }
 
   handleConsole = (e: ConsoleEvent) => {
-    // todo
+    // Note do not put `console.<log|error>` code here as it will re-trigger this event
+    this.eventStorage.append(
+      this._addTs(e)
+    )
   }
 
   _addTs = (e: EmittedEvent) => {

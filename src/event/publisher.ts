@@ -1,19 +1,21 @@
+import { EventsDto, StartOpts } from '../types'
 import { postJSON } from '../utils/fetch'
 import EventStorage from './storage'
 
 export default class EventPublisher {
-  private PUBLISH_TIME_MS = 5000
+  private pollMs = 5000
   private interval: NodeJS.Timeout | null = null
   private endpoint: string
   private eventStorage: EventStorage
 
-  constructor(endpoint: string, eventStorage: EventStorage) {
-    this.endpoint = endpoint
+  constructor(opts: StartOpts, eventStorage: EventStorage) {
+    this.endpoint = opts.endpoint
+    this.pollMs = opts.pollMs || this.pollMs
     this.eventStorage = eventStorage
   }
 
   start = () => {
-    this.interval = setInterval(this.publish, this.PUBLISH_TIME_MS)
+    this.interval = setInterval(this.publish, this.pollMs)
   }
 
   stop = () => {
@@ -23,11 +25,11 @@ export default class EventPublisher {
 
   private publish = async () => {
     const events = this.eventStorage.getBatch()
+    if (!events.length) return
     // TODO contingency when events could not be posted
-    console.log('events', events)
     await postJSON(
       `${this.endpoint}api/events`,
-      events
+      { events } as EventsDto
     )
   }
 
