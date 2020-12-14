@@ -48,3 +48,15 @@ export function cssPath(el: HTMLElement) {
   }
   return cssPath.reverse().join(' > ')
 }
+
+export const isBlocked = (
+  el: HTMLElement | HTMLInputElement,
+  blockedClasses: string[],
+  blockedTags: string[]
+) => {
+  let blocked = false
+  // TODO Figure out if better iterate classList first
+  blocked = blockedClasses.some(cls => el.classList.contains(cls))
+  blocked = blockedTags.some(tag => el.tagName.toLowerCase() === tag.toLowerCase())
+  return blocked
+}

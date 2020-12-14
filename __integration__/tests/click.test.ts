@@ -30,7 +30,7 @@ describe('recording clicks', () => {
     // Perhaps another way would be to have a browser specific directory for tests or 
     // to detect the browser with `browserName` and specify the values directly
     // or to use normalise.css in the `layout.ejs`
-    expect((postData.events[0] as ClickEvent).data.x).toBeWithinRange(49, 54)
+    expect((postData.events[0] as ClickEvent).data.x).toBeWithinRange(49, 65)
     expect((postData.events[0] as ClickEvent).data.y).toBeWithinRange(15, 19)
   })
 

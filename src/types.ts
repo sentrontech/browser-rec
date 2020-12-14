@@ -47,6 +47,13 @@ export type ClickEvent = {
   }
 } & BaseEvent
 
+export type InputChangeEvent = {
+  data: {
+    type: string,
+    value: string
+  }
+} & BaseEvent
+
 export type EventsDto = {
   events: EmittedEvent[]
 }
@@ -57,7 +64,9 @@ export type EventListenerOpts = {
 }
 
 export type StartOpts = {
-  clientCode: string,
+  clientCode: string
   endpoint: string
-  pollMs: number
+  pollMs?: number
+  blockedClasses?: string[]
+  blockedTags?: string[]
 }

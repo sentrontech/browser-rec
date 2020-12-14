@@ -1,14 +1,12 @@
 import { EventEmitter } from 'events'
 import EventStorage from './event/storage'
-import { ClickEvent, ConsoleEvent, EmittedEvent, EventType, StartOpts } from './types'
+import { ClickEvent, ConsoleEvent, EmittedEvent, EventType } from './types'
 
 class Emitter extends EventEmitter {
-  opts: StartOpts
   eventStorage: EventStorage
 
-  constructor(opts: StartOpts, eventStorage: EventStorage) {
+  constructor(eventStorage: EventStorage) {
     super()
-    this.opts = opts
     this.eventStorage = eventStorage
   }
 
@@ -38,12 +36,11 @@ class Emitter extends EventEmitter {
 
 let emitter: Emitter
 export default function getEmitterInstance (
-  opts?: StartOpts,
   eventStorage?: EventStorage
 ): Emitter {
   if (emitter) return emitter
-  if (opts && eventStorage) {
-    emitter = new Emitter(opts, eventStorage)
+  if (eventStorage) {
+    emitter = new Emitter(eventStorage)
     return emitter
   }
   // TODO custom error
