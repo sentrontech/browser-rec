@@ -1,7 +1,7 @@
-import getEmitterInstance from '../emitter'
+import Emitter from '../emitter'
 import { ConsoleEvent, EventType, ConsoleMethod } from '../types'
 
-const recordConsole = () => {
+const recordConsole = (emitter: Emitter) => {
   if (!globalThis.console) return
   // NOTE: Only some console functionalities relevant for capture
   const methods: ConsoleMethod[] = [
@@ -11,7 +11,6 @@ const recordConsole = () => {
     ConsoleMethod.Error,
     ConsoleMethod.Log,
   ]
-  const emitter = getEmitterInstance()
   const console = globalThis.console as { [key: string]: any }
   methods.forEach((m: ConsoleMethod) => {
     if (!(m in globalThis.console)) return

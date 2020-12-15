@@ -1,18 +1,17 @@
+import { mocked } from 'ts-jest/utils'
+import Emitter from '../emitter'
+import EventStorage from '../event/storage'
 import { ClickEvent, EventType } from '../types'
 import recordClicks from './click'
 
-const emitterMock = {
-  emit: jest.fn()
-}
+jest.mock('../emitter')
 
-jest.mock('../emitter', () => {
-  return () => emitterMock
-})
-
+const storage = new EventStorage()
+const emitter = mocked(new Emitter(storage))
 
 describe('recordClicks', () => {
-  beforeAll(recordClicks)
-  afterEach(() => emitterMock.emit.mockReset())
+  beforeAll(() => recordClicks(emitter))
+  afterEach(() => emitter.emit.mockReset())
 
   it('emits correct eventType and data', () => {
     document.body.click()
@@ -25,7 +24,7 @@ describe('recordClicks', () => {
         y: 0,
       }
     }
-    expect(emitterMock.emit).toHaveBeenCalledWith(eventType, out)
+    expect(emitter.emit).toHaveBeenCalledWith(eventType, out)
   })
 
   it('does not emit when click not fired', () => {
@@ -33,6 +32,6 @@ describe('recordClicks', () => {
     btn.disabled = true
     document.body.append(btn)
     btn.click()
-    expect(emitterMock.emit).not.toBeCalled()
+    expect(emitter.emit).not.toBeCalled()
   })
 })

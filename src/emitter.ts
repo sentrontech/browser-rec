@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 import EventStorage from './event/storage'
 import { ClickEvent, ConsoleEvent, EmittedEvent, EventType } from './types'
 
-class Emitter extends EventEmitter {
+export default class Emitter extends EventEmitter {
   eventStorage: EventStorage
 
   constructor(eventStorage: EventStorage) {
@@ -32,17 +32,4 @@ class Emitter extends EventEmitter {
     e.ts = Date.now()
     return e
   }
-}
-
-let emitter: Emitter
-export default function getEmitterInstance (
-  eventStorage?: EventStorage
-): Emitter {
-  if (emitter) return emitter
-  if (eventStorage) {
-    emitter = new Emitter(eventStorage)
-    return emitter
-  }
-  // TODO custom error
-  throw new Error('specify options when creating instance of emitter')
 }

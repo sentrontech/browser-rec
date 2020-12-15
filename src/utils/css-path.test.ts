@@ -1,4 +1,4 @@
-import { cssPath } from './dom'
+import { cssPath } from './css-path'
 
 describe('cssPath', () => {
   it('returns body if body', () => {
@@ -46,6 +46,24 @@ describe('cssPath', () => {
     const path = cssPath(btn)
     // outer is not added as our limit is hit by the inner div
     expect(path).not.toContain('outer')
+  })
+
+  it('returns path only 2 parent nodes up', () => {
+    const outer = document.createElement('div')
+    outer.className = 'outer'
+    const middle = document.createElement('div')
+    middle.className = 'middle'
+    const inner = document.createElement('div')
+    inner.className = 'inner'
+    const btn = document.createElement('button')
+    btn.className = 'btn'
+    inner.append(btn)
+    middle.append(inner)
+    outer.append(middle)
+    document.body.append(outer)
+    const path = cssPath(btn)
+    expect(path).toEqual('div.middle > div.inner > button.btn')
+    expect(path).not.toEqual('outer')
   })
 
   describe('using attributes', () => {

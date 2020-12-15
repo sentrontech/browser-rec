@@ -1,13 +1,14 @@
-import getEmitterInstance from '../emitter'
+import Emitter from '../emitter'
 import { EventType, ClickEvent } from '../types'
-import { addEventListener, cssPath } from '../utils/dom'
+import { addEventListener } from '../utils/dom'
+import { cssPath } from '../utils/css-path'
 
-const recordClicks = () => {
-  return addEventListener('click', emitClickEvent)
+const recordClicks = (emitter: Emitter) => {
+  const cb = emitClickEvent(emitter)
+  return addEventListener('click', cb)
 }
 
-const emitClickEvent = (e: MouseEvent) => {
-  const emitter = getEmitterInstance()
+const emitClickEvent = (emitter: Emitter) => (e: MouseEvent) => {
   if (!e.target) return
   const el = e.target as HTMLElement
   if (!el) return

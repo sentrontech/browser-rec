@@ -3,6 +3,7 @@ import { postJSON } from '../utils/fetch'
 import EventStorage from './storage'
 
 export default class EventPublisher {
+  private RETRY_TIMES = 2
   private pollMs = 5000
   private interval: NodeJS.Timeout | null = null
   private endpoint: string
@@ -23,14 +24,26 @@ export default class EventPublisher {
     clearInterval(this.interval)
   }
 
-  private publish = async () => {
+  publish = async () => {
     const events = this.eventStorage.getBatch()
     if (!events.length) return
-    // TODO contingency when events could not be posted
-    await postJSON(
-      `${this.endpoint}api/events`,
-      { events } as EventsDto
-    )
+
+    // Try to publish a few times
+    let error
+    for (let i = 0; i < this.RETRY_TIMES; i++) {
+      try {
+        return await postJSON(
+          `${this.endpoint}api/events`,
+          { events } as EventsDto
+        )
+      } catch (e) {
+        error = e
+      }
+    }
+
+    // If we failed to retry stop polling and throw
+    this.stop()
+    throw error
   }
 
 }

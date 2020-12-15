@@ -1,18 +1,19 @@
-import { ClickEvent, ConsoleEvent, ConsoleMethod, EventType } from '../types'
+import { mocked } from 'ts-jest/utils'
+import Emitter from '../emitter'
+import EventStorage from '../event/storage'
+import { ConsoleEvent, ConsoleMethod, EventType } from '../types'
 import recordConsole from './console'
 
-const emitterMock = {
-  emit: jest.fn()
-}
 
-jest.mock('../emitter', () => {
-  return () => emitterMock
-})
+jest.mock('../emitter')
+
+const storage = new EventStorage()
+const emitter = mocked(new Emitter(storage))
 
 
 describe('recordConsole', () => {
-  beforeAll(recordConsole)
-  afterEach(() => emitterMock.emit.mockReset())
+  beforeAll(() => recordConsole(emitter))
+  afterEach(() => emitter.emit.mockReset())
 
   it('emits correct eventType and data', () => {
     console.log('a log message')
@@ -24,7 +25,7 @@ describe('recordConsole', () => {
         args: ['a log message']
       }
     }
-    expect(emitterMock.emit).toHaveBeenCalledWith(eventType, out)
+    expect(emitter.emit).toHaveBeenCalledWith(eventType, out)
   })
 
   it('emits full arguments with formatters', () => {
@@ -37,7 +38,7 @@ describe('recordConsole', () => {
         args: ['A tomato is %cred!', 'background: red; color: white']
       }
     }
-    expect(emitterMock.emit).toHaveBeenCalledWith(eventType, out)
+    expect(emitter.emit).toHaveBeenCalledWith(eventType, out)
   })
 
   it('emits for relevant console methods', () => {
@@ -46,13 +47,13 @@ describe('recordConsole', () => {
     console.warn('warn message')
     console.log('log message')
     console.error('error message')
-    expect(emitterMock.emit).toHaveBeenCalledTimes(5)
+    expect(emitter.emit).toHaveBeenCalledTimes(5)
   })
 
   it('does not emit when no relevant console methods fired', () => {
     console.dir({foo: 'bar'})
     console.count('foo')
     console.assert(true, 'a true assertion')
-    expect(emitterMock.emit).not.toBeCalled()
+    expect(emitter.emit).not.toBeCalled()
   })
 })

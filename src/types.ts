@@ -4,6 +4,7 @@ export enum EventType {
     Scroll = 'sentron.dom.scroll',
   */
   Click = 'sentron.dom.click',
+  Input = 'sentron.dom.input',
 
   /* Devtool events 
     For example network requests and console logs
