@@ -1,9 +1,11 @@
 import { mocked } from 'ts-jest/utils'
-import { EventType, StartOpts } from '../types'
+import { EventType, Opts } from '../types'
 import EventPublisher from './publisher'
 import EventStorage from './storage'
 import { postJSON as _postJSON} from '../utils/fetch'
-import { JestParams } from 'jest-playwright-preset'
+import Recorder from '../record'
+import Emitter from '../emitter'
+import { getDefaultOpts } from '../utils'
 
 jest.mock('../utils/fetch')
 const postJSON = mocked(_postJSON)
@@ -17,21 +19,24 @@ const anEvent = {
   }
 }
 
-const opts: StartOpts = {
+const opts: Opts = getDefaultOpts({
   clientCode: '123',
   endpoint: 'http://localhost:9999/',
   pollMs: 100
-}
+})
 
 let eventPublisher: EventPublisher
 let eventStorage: EventStorage
+let recorder: Recorder
 
 describe('EventPublisher', () => {
-  beforeAll(() => jest.useFakeTimers())
+  beforeEach(() => jest.useFakeTimers())
 
   beforeEach(() => {
     eventStorage = new EventStorage()
-    eventPublisher = new EventPublisher(opts, eventStorage)
+    const emitter = new Emitter(eventStorage)
+    recorder = new Recorder(opts, emitter)
+    eventPublisher = new EventPublisher(opts, eventStorage, recorder)
   })
 
   afterEach(() => {
@@ -62,7 +67,20 @@ describe('EventPublisher', () => {
   })
 
   describe('stop', () => {
-    it('does not call publish when stopped', () => {
+    it('clears interval', () => {
+      eventPublisher.start()
+      eventPublisher.stop()
+      expect(clearInterval).toHaveBeenCalledWith(expect.any(Number))
+    })
+
+    it('stops recording', () => {
+      const recorderStop = jest.spyOn(recorder, 'stop')
+      eventPublisher.start()
+      eventPublisher.stop()
+      expect(recorderStop).toHaveBeenCalled()
+    })
+
+    it('does not call publish any more events', () => {
       const publish = jest.spyOn(eventPublisher, 'publish')
       eventPublisher.start()
       eventStorage.append(anEvent)

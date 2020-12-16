@@ -1,17 +1,14 @@
 <html>
   <head>
     <script src="http://localhost:9999/dist/sentron.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/lolex@2.7.1/lolex.min.js"></script> -->
     <script>
-      // window.clock = FakeTimers.install({
-      //   shouldAdvanceTime: true,
-      //   advanceTimeDelta: 1000
-      // });
-      // window.fakeClock = lolex.install()
       sentron.start({
         clientCode: 'ABC123XY',
         endpoint: 'http://localhost:9999/',
-        pollMs: 500
+        pollMs: 500,
+        blocked: {
+          classes: ['sentron-blocked']
+        }
       });
     </script>
   </head>

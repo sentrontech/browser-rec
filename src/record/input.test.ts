@@ -1,27 +1,28 @@
 import { mocked } from 'ts-jest/utils'
 import Emitter from '../emitter'
 import EventStorage from '../event/storage'
-import { InputChangeEvent, EventType, StartOpts } from '../types'
+import { InputChangeEvent, EventType, ListenedEvt, BlockedOpts } from '../types'
+import { removeEventListener } from '../utils/dom'
 import recordInputs from './input'
 
 jest.mock('../emitter')
 
 const storage = new EventStorage()
-const emitter = mocked(new Emitter(storage))
+let emitter = mocked(new Emitter(storage))
 
-const opts: StartOpts = {
-  clientCode: '123',
-  endpoint: 'http://localhost:9999/',
-  blockedClasses: ['foo', 'bar']
-}
+const opts: BlockedOpts = {}
 
+let listenedEvt: ListenedEvt<Event>
 describe('recordInputs', () => {
-  beforeAll(() => recordInputs(emitter, opts))
+
+  beforeEach(() => emitter.emit.mockClear())
+  
   afterEach(() => {
-    emitter.emit.mockReset()
+    removeEventListener(listenedEvt)
   })
 
   it('emits correct eventType and data', () => {
+    listenedEvt = recordInputs(opts, emitter)
     const input = createInput('text', 'input value')
     input.dispatchEvent(new Event('input'))
     const eventType = EventType.Input
@@ -32,31 +33,29 @@ describe('recordInputs', () => {
         value: 'input value'
       }
     }
+    expect(emitter.emit).toHaveBeenCalledTimes(1)
     expect(emitter.emit).toHaveBeenCalledWith(eventType, out)
   })
 
   it('does not emit input unless event called', () => {
+    listenedEvt = recordInputs(opts, emitter)
     createInput('text', 'input value')
     expect(emitter.emit).not.toBeCalled()
   })
-})
 
-describe('blocked recordInputs', () => {
   it('does not emit when input has blocked class', () => {
-    recordInputs(emitter, opts)
-    const input = createInput('text', 'input value')
+    const blockedOpts = { classes: ['foo', 'bar'] }
+    listenedEvt = recordInputs(blockedOpts, emitter)
+    const input = createInput('password', 'input value1')
     input.classList.add('foo')
     input.dispatchEvent(new Event('input'))
     expect(emitter.emit).not.toBeCalled()
   })
   
-  xit('does not emit when input has blocked tag', () => {
-    const optsWithTags: StartOpts = {
-      ...opts,
-      blockedTags: ['input']
-    }
-    recordInputs(emitter, optsWithTags)
-    const input = createInput('text', 'input value')
+  it('does not emit when input has blocked tag', () => {
+    const blockedOpts = { tags: ['input'] }
+    listenedEvt = recordInputs(blockedOpts, emitter)
+    const input = createInput('text', 'input value2')
     input.dispatchEvent(new Event('input'))
     expect(emitter.emit).not.toBeCalled()
   })

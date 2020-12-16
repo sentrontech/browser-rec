@@ -1,3 +1,5 @@
+import { Block } from "typescript"
+
 export enum EventType {
   /* Browser JS events 
     For example inputs, clicks, scrolls
@@ -19,11 +21,12 @@ export type RecordConfig = {
   endpoint?: string
 }
 
-export type EmittedEvent = ConsoleEvent | ClickEvent
+export type EmittedEvent = ConsoleEvent | ClickEvent | InputChangeEvent
 
 type BaseEvent = {
   eventType: EventType
   ts?: number
+  seqNo?: number
 }
 
 export enum ConsoleMethod {
@@ -64,10 +67,25 @@ export type EventListenerOpts = {
   capture?: boolean
 }
 
+export type BlockedOpts = {
+  classes?: string[]
+  tags?: string[]
+}
+
 export type StartOpts = {
   clientCode: string
   endpoint: string
   pollMs?: number
-  blockedClasses?: string[]
-  blockedTags?: string[]
+  blocked?: BlockedOpts
 }
+
+export type Opts = Required<StartOpts>
+
+export type ListenedEvt<E extends Event> = {
+  event: string,
+  fn: (evt: E) => void,
+  target: Document,
+  opts: EventListenerOpts
+}
+
+export type Resetable = { reset(): void } | undefined

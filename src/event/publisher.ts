@@ -1,18 +1,21 @@
-import { EventsDto, StartOpts } from '../types'
+import Recorder from '../record'
+import { EventsDto, Opts } from '../types'
 import { postJSON } from '../utils/fetch'
 import EventStorage from './storage'
 
 export default class EventPublisher {
   private RETRY_TIMES = 2
-  private pollMs = 5000
+  private pollMs: number
   private interval: NodeJS.Timeout | null = null
   private endpoint: string
   private eventStorage: EventStorage
+  private recorder: Recorder
 
-  constructor(opts: StartOpts, eventStorage: EventStorage) {
+  constructor(opts: Opts, eventStorage: EventStorage, recorder: Recorder) {
     this.endpoint = opts.endpoint
-    this.pollMs = opts.pollMs || this.pollMs
+    this.pollMs = opts.pollMs
     this.eventStorage = eventStorage
+    this.recorder = recorder
   }
 
   start = () => {
@@ -22,6 +25,8 @@ export default class EventPublisher {
   stop = () => {
     if (!this.interval) return
     clearInterval(this.interval)
+     // Stop recording events
+     this.recorder.stop()
   }
 
   publish = async () => {

@@ -1,26 +1,27 @@
 import Emitter from './emitter'
 import EventPublisher from './event/publisher'
 import EventStorage from './event/storage'
-import recordClicks from './record/click'
-import recordConsole from './record/console'
-import recordInputs from './record/input'
+import Recorder from './record'
 import { StartOpts } from './types'
+import { getDefaultOpts } from './utils'
 
-const start = (opts: StartOpts) => {
-  // Note: Some base checks here have been omitted 
-  // 1. Check if Sentron has already been loaded
-  // 2. Check if `document.readyState` is complete
-  // 3. If not (2) then addEventListener to call `start` when the document is ready
+const start = (startOpts: StartOpts) => {
+  /*
+    NOTE: Some base checks here have been omitted 
+    1. Check if Sentron has already been loaded
+    2. Check if `document.readyState` is complete
+    3. If not (2) then addEventListener to call `start` when the document is ready
+  */
+  const opts = getDefaultOpts(startOpts)
   const eventStorage = new EventStorage()
-  const eventPublisher = new EventPublisher(opts, eventStorage)
   const emitter = new Emitter(eventStorage)
+  const recorder = new Recorder(opts, emitter)
+  const eventPublisher = new EventPublisher(opts, eventStorage, recorder)
 
   emitter.start()
+  recorder.start()
   eventPublisher.start()
-
-  recordClicks(emitter)
-  recordInputs(emitter, opts)
-  recordConsole(emitter)
+  
 }
 
 export {

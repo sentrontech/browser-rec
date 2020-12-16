@@ -1,6 +1,6 @@
 module.exports = {
-  browsers: ['chromium', 'firefox', 'webkit'],
-  // browsers: ['chromium'],
+  // browsers: ['chromium', 'firefox', 'webkit'],
+  browsers: ['chromium'],
   serverOptions: {
     command: 'npm run server:integration',
     debug: true,
