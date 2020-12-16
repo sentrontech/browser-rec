@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <script src="http://localhost:9999/dist/sentron.min.js"></script>
+    <script>
+      sentron.start({
+        clientCode: 'ABC123XY',
+        endpoint: 'http://localhost:9999/',
+        pollMs: 500,
+        blocked: {
+          classes: ['sentron-blocked']
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <%- partial && include(partial) || 'Sentron' -%>
+  </body>
+</html>

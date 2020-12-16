@@ -1,0 +1,5 @@
+# Ignore artifacts:
+dist
+!*.ts
+node_modules
+.github
